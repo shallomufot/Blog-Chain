@@ -1,0 +1,190 @@
+# Decentralized Blog Smart Contract
+
+A comprehensive decentralized blogging platform built on the Stacks blockchain using Clarity smart contracts. This platform enables users to create, manage, and monetize blog content with features like premium posts, user subscriptions, comments, and social interactions.
+
+## Features
+
+### Core Functionality
+- **User Management**: Registration, profile updates, and verification system
+- **Content Creation**: Create, edit, and delete blog posts with rich metadata
+- **Social Features**: Like posts/comments, follow users, and build communities
+- **Comments System**: Threaded comments with nested replies
+- **Premium Content**: Monetize posts with STX payments and subscription model
+- **Categories & Tags**: Organize content with categorization and tagging
+- **Reputation System**: Build user reputation through engagement
+
+### Advanced Features
+- **Content Moderation**: Admin controls for locking posts and verifying users
+- **Emergency Controls**: Contract pause functionality and emergency withdrawal
+- **Access Control**: Premium content access management with time-based subscriptions
+- **Analytics**: Track post counts, user engagement, and platform metrics
+
+## Contract Architecture
+
+### Data Structures
+
+#### Posts
+- Unique post ID with auto-incrementing counter
+- Author, title, content, and timestamp
+- Category and tags for organization
+- Like count and comment count tracking
+- Premium content pricing and access control
+- Lock status for moderation
+
+#### Users
+- Username and bio information
+- Post count and reputation tracking
+- Join date and verification status
+- Comprehensive user profiles
+
+#### Comments
+- Nested comment structure with parent-child relationships
+- Like system for comments
+- Timestamp and author tracking
+
+#### Social Features
+- Follow/unfollow relationships
+- Like tracking for posts and comments
+- Premium subscriptions with expiration dates
+
+### Key Constants
+- `DEFAULT_SUBSCRIPTION_DURATION`: 144,000 blocks (~1 week)
+- `PLATFORM_FEE`: 1 STX (1,000,000 microSTX)
+- Error codes for comprehensive error handling
+
+## Public Functions
+
+### User Management
+- `register-user(username, bio)`: Register new user account
+- `update-user-profile(username, bio)`: Update existing user profile
+
+### Content Management
+- `create-post(title, content, category, tags, premium, price)`: Create new blog post
+- `edit-post(post-id, title, content, category, tags)`: Edit existing post
+- `delete-post(post-id)`: Remove post from platform
+
+### Social Interactions
+- `like-post(post-id)`: Like or unlike a post
+- `add-comment(post-id, content, parent-comment)`: Add comment to post
+- `like-comment(comment-id)`: Like or unlike a comment
+- `follow-user(user-to-follow)`: Follow or unfollow a user
+
+### Premium Features
+- `purchase-premium-post(post-id)`: Purchase access to premium content
+
+### Administrative Functions
+- `toggle-contract-pause()`: Emergency pause/unpause contract
+- `verify-user(user)`: Verify user account
+- `lock-post(post-id)`: Lock post to prevent edits
+- `update-platform-fee(new-fee)`: Adjust platform fee
+- `emergency-withdraw()`: Emergency fund withdrawal
+
+## Read-Only Functions
+
+### Data Retrieval
+- `get-post(post-id)`: Retrieve post details
+- `get-user(user)`: Get user profile information
+- `get-comment(comment-id)`: Fetch comment details
+- `get-post-count()`: Total number of posts
+- `get-comment-count()`: Total number of comments
+
+### Status Checks
+- `is-post-liked(post-id, user)`: Check if user liked a post
+- `is-comment-liked(comment-id, user)`: Check if user liked a comment
+- `is-following(follower, following)`: Check follow relationship
+- `has-premium-access(subscriber, author)`: Verify premium access
+- `get-category-info(category)`: Get category statistics
+- `get-platform-fee()`: Current platform fee
+- `is-contract-paused()`: Contract pause status
+
+## Usage Examples
+
+### Registering a User
+```clarity
+(contract-call? .blog-contract register-user "john_doe" u"Tech enthusiast and blockchain developer")
+```
+
+### Creating a Blog Post
+```clarity
+(contract-call? .blog-contract create-post 
+  "My First Blog Post" 
+  u"This is the content of my first blog post..." 
+  "Technology" 
+  (list "blockchain" "stacks" "clarity") 
+  false 
+  u0)
+```
+
+### Creating Premium Content
+```clarity
+(contract-call? .blog-contract create-post 
+  "Premium Tutorial" 
+  u"Exclusive content for subscribers..." 
+  "Education" 
+  (list "tutorial" "premium") 
+  true 
+  u5000000) ;; 5 STX
+```
+
+### Liking a Post
+```clarity
+(contract-call? .blog-contract like-post u1)
+```
+
+### Adding a Comment
+```clarity
+(contract-call? .blog-contract add-comment u1 u"Great post! Thanks for sharing." none)
+```
+
+### Purchasing Premium Content
+```clarity
+(contract-call? .blog-contract purchase-premium-post u1)
+```
+
+## Error Handling
+
+The contract includes comprehensive error handling with specific error codes:
+- `ERR_UNAUTHORIZED (u100)`: Permission denied
+- `ERR_POST_NOT_FOUND (u101)`: Post doesn't exist
+- `ERR_INVALID_PARAMS (u102)`: Invalid parameters
+- `ERR_ALREADY_EXISTS (u103)`: Resource already exists
+- `ERR_INSUFFICIENT_FUNDS (u104)`: Not enough STX
+- `ERR_POST_LOCKED (u105)`: Post is locked
+- `ERR_COMMENT_NOT_FOUND (u106)`: Comment doesn't exist
+- `ERR_USER_NOT_FOUND (u107)`: User doesn't exist
+
+## Security Features
+
+### Access Control
+- Contract owner privileges for administrative functions
+- Post author validation for edit/delete operations
+- Self-like prevention for posts and comments
+- Premium content access validation
+
+### Data Validation
+- Input length validation for all user inputs
+- Category and tag count limits
+- Price validation for premium content
+- Parent comment validation for nested comments
+
+### Economic Security
+- STX transfer validation for premium purchases
+- Subscription expiration tracking
+- Platform fee collection mechanism
+- Emergency withdrawal for contract owner
+
+## Deployment
+
+1. Deploy the contract to Stacks testnet or mainnet
+2. Set appropriate platform fees using `update-platform-fee`
+3. Begin user registration and content creation
+4. Monitor contract performance and user engagement
+
+## Future Enhancements
+
+- Integration with Stacks NFTs for content ownership
+- Advanced moderation tools and community governance
+- Content recommendation algorithms
+- Multi-language support
+- Mobile app integration
+- Analytics dashboard for creators
